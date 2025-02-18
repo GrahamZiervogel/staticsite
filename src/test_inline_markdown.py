@@ -1,7 +1,13 @@
 import unittest
 
 from textnode import TextNode, TextType, text_node_to_html_node
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links,
+    split_nodes_link,
+    split_nodes_image,
+)
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -44,6 +50,20 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                 TextNode(" and an ", TextType.TEXT),
                 TextNode("italic part", TextType.ITALIC)],
                 new_nodes)
+
+
+class TestSplitNodesLink(unittest.TestCase):
+    def test_links(self):
+        node = TextNode("This is text with a `code block` word", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(1, 1)
+
+
+class TestSplitNodesImage(unittest.TestCase):
+    def test_links(self):
+        node = TextNode("This is text with a `code block` word", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(1, 1)
 
 
 class TestExtractMarkdownImages(unittest.TestCase):
