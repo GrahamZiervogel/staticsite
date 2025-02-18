@@ -1,19 +1,17 @@
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 def main():
-    tag = "p"
-    children = [LeafNode("b", "Bold text"),
-        LeafNode(None, "Normal text"),
-        LeafNode("i", "italic text", {"href": "https://www.yahoo.com"}),
-        LeafNode(None, "Normal text")]
-    props = {"href": "https://www.google.com"}
+    text = "GOOGLE"
+    text_type = TextType.LINK
+    url = "www.google.com"
 
-    node = ParentNode(tag, children, props)
+    text_node = TextNode(text, text_type, url)
 
-    print(node)
-    print(node.to_html())
+    html_node = text_node_to_html_node(text_node)
+
+    print(html_node)
 
 
 main()
