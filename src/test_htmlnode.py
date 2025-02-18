@@ -15,8 +15,9 @@ class TestHTMLNode(unittest.TestCase):
         self.assertNotEqual(node, node2)
 
     def test_repr(self):
-        node = HTMLNode("tag", "value", "children", "props")
-        self.assertEqual(repr(node), "HTMLNode(tag, value, children, props)")
+        node = HTMLNode("tag", "value", [LeafNode("a", "a")], {"href": "www.google.com"})
+        self.assertEqual(repr(node),
+            "HTMLNode(tag, value, children: [LeafNode(a, a, None)], {'href': 'www.google.com'})")
 
     def test_props_to_html(self):
         props = {"href": "https://www.google.com", "target": "_blank"}
@@ -36,8 +37,8 @@ class TestLeafNode(unittest.TestCase):
         self.assertNotEqual(node, node2)
 
     def test_repr(self):
-        node = LeafNode("tag", "value", "props")
-        self.assertEqual(repr(node), "HTMLNode(tag, value, None, props)")
+        node = LeafNode("tag", "value", {"href": "www.google.com"})
+        self.assertEqual(repr(node), "LeafNode(tag, value, {'href': 'www.google.com'})")
 
     def test_to_html_no_props(self):
         tag = "p"
@@ -55,18 +56,19 @@ class TestLeafNode(unittest.TestCase):
 
 class TestParentNode(unittest.TestCase):
     def test_eq(self):
-        node = ParentNode("tag", "children")
-        node2 = ParentNode("tag", "children")
+        node = ParentNode("tag", [LeafNode("a", "a")])
+        node2 = ParentNode("tag", [LeafNode("a", "a")])
         self.assertEqual(node, node2)
 
     def test_text_not_eq(self):
-        node = ParentNode("tag1", "children1")
-        node2 = ParentNode("tag2", "children2")
+        node = ParentNode("tag1", [LeafNode("a", "a")])
+        node2 = ParentNode("tag2", [LeafNode("b", "b")])
         self.assertNotEqual(node, node2)
 
     def test_repr(self):
-        node = ParentNode("tag", "children", "props")
-        self.assertEqual(repr(node), "HTMLNode(tag, None, children, props)")
+        node = ParentNode("tag", [LeafNode("a", "a")], {"href": "www.google.com"})
+        self.assertEqual(repr(node), 
+            "ParentNode(tag, children: [LeafNode(a, a, None)], {'href': 'www.google.com'})")
 
     def test_to_html_no_props(self):
         tag = "p"
@@ -87,7 +89,7 @@ class TestParentNode(unittest.TestCase):
         props = {"href": "https://www.google.com"}
         node = ParentNode(tag, children, props)
         self.assertEqual(node.to_html(),
-                         '<a href="https://www.google.com"><x><b>bold text</b></x><c>curve text</c></a>')
+            '<a href="https://www.google.com"><x><b>bold text</b></x><c>curve text</c></a>')
     
     def test_nested_parents_with_props(self):
         tag = "a"
@@ -96,8 +98,8 @@ class TestParentNode(unittest.TestCase):
         props = {"href": "https://www.google.com"}
         node = ParentNode(tag, children, props)
         self.assertEqual(node.to_html(),
-                         '<a href="https://www.google.com"><x cref="cheese"><b>bold text</b></x>' +
-                         '<d eref="energy" fref="fish">dimple</d></a>')
+            '<a href="https://www.google.com"><x cref="cheese"><b>bold text</b></x>' +
+            '<d eref="energy" fref="fish">dimple</d></a>')
     
 
 if __name__ == "__main__":
