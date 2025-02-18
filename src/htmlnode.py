@@ -24,3 +24,35 @@ class HTMLNode():
         for key in self.props:
             props = props + f' {key}="{self.props[key]}"'
         return props
+
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        children = None
+        super().__init__(tag, value, children, props)
+
+    def to_html(self):
+        if self.value is None:
+            raise ValueError("All leaf nodes must have a value")
+        if self.tag is None:
+            return self.value
+        return f"<{self.tag + self.props_to_html()}>{self.value}</{self.tag}>"
+
+   
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props=None):
+        value = None
+        super().__init__(tag, value, children, props)
+
+    def to_html(self):
+        if self.tag is None:
+            raise ValueError("All parent nodes must have a tag")
+        if self.children is None:
+            raise ValueError("All parent nodes must have children")
+        html = f"<{self.tag + self.props_to_html()}>"
+        for node in self.children:
+            html += node.to_html()
+        html += f"</{self.tag}>"
+        return html
+
+

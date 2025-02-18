@@ -1,12 +1,19 @@
 from textnode import TextNode, TextType
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 def main():
-    text = "This is a text node"
-    text_type = TextType.BOLD
-    url = "https://www.boot.dev"
-    text_node = TextNode(text, text_type, url)
-    print(text_node)
+    tag = "p"
+    children = [LeafNode("b", "Bold text"),
+        LeafNode(None, "Normal text"),
+        LeafNode("i", "italic text", {"href": "https://www.yahoo.com"}),
+        LeafNode(None, "Normal text")]
+    props = {"href": "https://www.google.com"}
+
+    node = ParentNode(tag, children, props)
+
+    print(node)
+    print(node.to_html())
 
 
 main()
