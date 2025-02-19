@@ -10,8 +10,8 @@ from inline_markdown import (
 
 
 def main():
-    node = TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
-    new_nodes = split_nodes_link([node])
+    node = TextNode("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)", TextType.TEXT)
+    new_nodes = split_nodes_image([node])
     print(new_nodes)
 
 

@@ -30,25 +30,76 @@ def split_nodes_link(old_nodes):
         if (node.text_type != TextType.TEXT):
             new_nodes.append(node)
             continue
-        links = extract_markdown_links(node.text)
-        if links is None:
+
+        text = node.text
+        links = extract_markdown_links(text)
+
+        if len(links) == 0:
             new_nodes.append(node)
             continue
-        text = node.text
+
         for link in links:
             link_text = link[0]
             link_url = link[1]
-            sections = text.split(f"[{link_text}]({link_url})")
-            textNode = TextNode(sections[0], TextType.TEXT)
+
+            sections = text.split(f"[{link_text}]({link_url})", 1)
+
+            if len(sections) != 2:
+                raise ValueError("Markdown error: link section is not closed")
+
+            if sections[0] != "":
+                textNode = TextNode(sections[0], TextType.TEXT)
+                new_nodes.append(textNode)
+
             linkNode = TextNode(link_text, TextType.LINK, link_url)
-            new_nodes.append(textNode)
             new_nodes.append(linkNode)
+
             text = sections[1]
+
+        if text != "":
+            textNode = TextNode(text, TextType.TEXT)
+            new_nodes.append(textNode)
+
         return new_nodes    
 
             
 def split_nodes_image(old_nodes):
-    return
+    new_nodes = []
+    for node in old_nodes:
+        if (node.text_type != TextType.TEXT):
+            new_nodes.append(node)
+            continue
+
+        text = node.text
+        imgs = extract_markdown_images(text)
+
+        if len(imgs) == 0:
+            new_nodes.append(node)
+            continue
+
+        for img in imgs:
+            img_text = img[0]
+            img_url = img[1]
+
+            sections = text.split(f"![{img_text}]({img_url})", 1)
+
+            if len(sections) != 2:
+                raise ValueError("Markdown error: img section is not closed")
+
+            if sections[0] != "":
+                textNode = TextNode(sections[0], TextType.TEXT)
+                new_nodes.append(textNode)
+
+            imgNode = TextNode(img_text, TextType.IMAGE, img_url)
+            new_nodes.append(imgNode)
+
+            text = sections[1]
+
+        if text != "":
+            textNode = TextNode(text, TextType.TEXT)
+            new_nodes.append(textNode)
+
+        return new_nodes
 
 
 def extract_markdown_images(text):
